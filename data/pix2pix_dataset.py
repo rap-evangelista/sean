@@ -76,7 +76,7 @@ class Pix2pixDataset(BaseDataset):
 
         # if using instance maps
         if self.opt.no_instance:
-            instance_tensor = 0
+            instance_tensor = torch.Tensor([0])
         else:
             instance_path = self.instance_paths[index]
             instance = Image.open(instance_path)

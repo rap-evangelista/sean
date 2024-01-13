@@ -37,7 +37,7 @@ class Pix2PixModel(torch.nn.Module):
     # of deep networks. We used this approach since DataParallel module
     # can't parallelize custom functions, we branch to different
     # routines based on |mode|.
-    def forward(self, data, mode):
+    def forward(self, data, mode, style_codes=None):
         input_semantics, real_image = self.preprocess_input(data)
 
         if mode == 'generator':
@@ -55,7 +55,7 @@ class Pix2PixModel(torch.nn.Module):
             with torch.no_grad():
                 # fake_image, _ = self.generate_fake(input_semantics, real_image)
                 obj_dic = data['path']
-                fake_image = self.save_style_codes(input_semantics, real_image, obj_dic)
+                fake_image = self.save_style_codes(input_semantics, real_image, obj_dic, style_codes)
             return fake_image
         elif mode == 'UI_mode':
             with torch.no_grad():
@@ -200,9 +200,9 @@ class Pix2PixModel(torch.nn.Module):
 
 ###############################################################
 
-    def save_style_codes(self, input_semantics, real_image, obj_dic):
+    def save_style_codes(self, input_semantics, real_image, obj_dic, style_codes=None):
 
-        fake_image = self.netG(input_semantics, real_image, obj_dic=obj_dic)
+        fake_image = self.netG(input_semantics, real_image, obj_dic=obj_dic, style_codes=style_codes)
 
         return fake_image
 
